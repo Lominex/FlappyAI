@@ -34,7 +34,7 @@ class game:
                         self.bird.jump()
                 ##end remove 
                 if event.type == self.SPAWNPIPE:
-                    self.pipelist.append(Pipe.Pipe(self.screen, 80, self.width, 0))
+                    self.pipelist.append(Pipe.Pipe(self.screen, 80, self.width + 10, 0))
                     print('PIPE')
             self.screen.fill(self.BACKGROUND)
 
@@ -47,8 +47,11 @@ class game:
                 self.pipelist[i].draw()
                 if self.pipelist[i].x + self.pipelist[i].width <= 0:
                     self.pipelist.pop(i)
+                
+                self.bird.collision(self.bird.x + self.width,self.bird.x,0,0,self.pipelist[i].x,0,0)
 
             pygame.display.flip()
+            
             self.clock.tick(60)
 
 game(500, 725).main() 

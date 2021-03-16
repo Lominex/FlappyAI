@@ -8,7 +8,7 @@ class Bird:
         self.screen = screen
         self.width = width
         self.heigth = heigth
-        self.jump_hight = 7
+        self.jump_higth = 7
         self.x = 100
         self.y = 100
 
@@ -23,4 +23,8 @@ class Bird:
 
     def jump(self):
         self.movement = 0
-        self.movement -= self.jump_hight
+        self.movement -= self.jump_higth
+
+    def collision(self, birdrightbottom, birdleftbottom, b3, b4, p1, pipeleftbottom, p3, p4):
+        if pipeleftbottom < p1 and p1 < pipeleftbottom and b4 < p3 and p4 < b3:
+            print('collision')
