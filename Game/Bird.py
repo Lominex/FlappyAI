@@ -12,13 +12,10 @@ class Bird:
         self.x = 100
         self.y = 100
 
-        self.surface = pygame.Surface((self.width, self.heigth))
-        self.rect = self.surface.get_rect(center = (self.x, self.y))
-        self.surface.fill((255,255,0), rect=None, special_flags=0)
-    
+        self.YELLOW = (255,255,0)
+
     def draw(self):
-        self.screen.blit(self.surface, (self.x, self.y))
-        self.rect = self.surface.get_rect(center = (self.x, self.y))
+        pygame.draw.rect(self.screen, self.YELLOW, (self.x-(self.width/2),self.y-(self.heigth/2),self.width, self.heigth))
 
     def apply_gravity(self):
         self.movement += self.gravity
@@ -27,10 +24,3 @@ class Bird:
     def jump(self):
         self.movement = 0
         self.movement -= self.jump_hight
-
-    def collsision(self, rect):
-        if self.rect.colliderect(rect):
-            print('Collison')
-            return True
-        else:
-            return False
