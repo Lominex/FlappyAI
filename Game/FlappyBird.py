@@ -8,10 +8,11 @@ class game:
         pygame.init()
         self.screen = pygame.display.set_mode((width, height))
         pygame.display.set_caption("FlappyAI")
-
         self.clock = pygame.time.Clock()
+        
         self.active = True
         self.width = width
+        
         self.bird = Bird.Bird(30, 30, self.screen, 0.25)
         self.pipelist = []
         self.pipelist.append(Pipe.Pipe(self.screen, 80, width, 0))
@@ -35,9 +36,13 @@ class game:
                 ##end remove 
                 if event.type == self.SPAWNPIPE:
                     self.pipelist.append(Pipe.Pipe(self.screen, 80, self.width, 0))
-                    print('PIPE')
             self.screen.fill(self.BACKGROUND)
-
+            
+            for i in range(len(self.pipelist)-1, 0, -1):
+                if self.bird.collsision(self.pipelist[i].rectup):
+                    exit()
+                if self.bird.collsision(self.pipelist[i].rectdown):
+                    exit()
             #draw_pipe
             self.bird.apply_gravity()
             self.bird.draw()
@@ -49,6 +54,7 @@ class game:
                     self.pipelist.pop(i)
 
             pygame.display.flip()
+
             self.clock.tick(60)
 
 game(500, 725).main() 
