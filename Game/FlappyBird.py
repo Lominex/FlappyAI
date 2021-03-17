@@ -48,7 +48,7 @@ class game:
                 if self.pipelist[i].x + self.pipelist[i].width <= 0:
                     self.pipelist.pop(i)
                 
-                self.bird.collision(self.bird.x + self.width,self.bird.x,0,0,self.pipelist[i].x,0,0)
+                self.bird.collision(self.pipelist[i].upperpipeupperlefty,self.pipelist[i].upperpipebottomlefty,self.pipelist[i].upperpipebottomleftx,self.pipelist[i].upperpipebottomrightx)
 
             pygame.display.flip()
             
