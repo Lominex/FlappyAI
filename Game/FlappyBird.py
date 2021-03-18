@@ -18,6 +18,13 @@ class game:
 
         self.BACKGROUND = (0,255,255)
 
+        self.font = pygame.font.Font('freesansbold.ttf', 40)
+        self.text = self.font.render(bytes(self.bird.points), True, (0,0,0), (self.BACKGROUND))
+        self.textRect = self.text.get_rect()
+        self.textRect.center = (self.width // 2, 50)
+
+        self.toprect = pygame.Rect(-5,0,self.width, 5)
+        self.bottomrect = pygame.Rect(0,height + 5,self.width, 5)
         self.SPAWNPIPE = pygame.USEREVENT
         pygame.time.set_timer(self.SPAWNPIPE, 1500)
 
@@ -40,6 +47,8 @@ class game:
             #draw_pipe
             self.bird.apply_gravity()
             self.bird.draw()
+            self.text = self.font.render(str(int(self.bird.points/6)), True, (0,0,0), (self.BACKGROUND))
+            self.screen.blit(self.text, self.textRect)
             
             for i in range(len(self.pipelist)-1, 0, -1):
                 self.pipelist[i].move()
@@ -53,6 +62,11 @@ class game:
                     self.bird.kill()
                 if (self.bird.collision(self.pipelist[i].rectpoint)):
                     self.bird.addPoint()
+
+            if (self.bird.collision(self.toprect)):
+                self.bird.kill()
+            if (self.bird.collision(self.bottomrect)):
+                self.bird.kill()
 
             pygame.display.flip()
             

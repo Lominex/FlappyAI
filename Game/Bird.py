@@ -30,11 +30,11 @@ class Bird:
         self.movement = 0
         self.movement -= self.jump_higth
 
-    def collision(self, rect:pygame.rect):
+    def collision(self, rect:pygame.Rect):
         return self.rect.colliderect(rect)
 
     def kill(self):
-        print(self.points)
+        print(self.points / 6)
         exit()
 
     def addPoint(self):
