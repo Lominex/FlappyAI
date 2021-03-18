@@ -35,7 +35,6 @@ class game:
                 ##end remove 
                 if event.type == self.SPAWNPIPE:
                     self.pipelist.append(Pipe.Pipe(self.screen, 80, self.width + 10, 0))
-                    print('PIPE')
             self.screen.fill(self.BACKGROUND)
 
             #draw_pipe
@@ -48,7 +47,12 @@ class game:
                 if self.pipelist[i].x + self.pipelist[i].width <= 0:
                     self.pipelist.pop(i)
                 
-                self.bird.collision(self.pipelist[i].upperpipeupperlefty,self.pipelist[i].upperpipebottomlefty,self.pipelist[i].upperpipebottomleftx,self.pipelist[i].upperpipebottomrightx)
+                if (self.bird.collision(self.pipelist[i].rectup)):
+                    self.bird.kill()
+                if (self.bird.collision(self.pipelist[i].rectdown)):
+                    self.bird.kill()
+                if (self.bird.collision(self.pipelist[i].rectpoint)):
+                    self.bird.addPoint()
 
             pygame.display.flip()
             
