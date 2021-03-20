@@ -1,4 +1,5 @@
 import pygame
+import random
 
 class Bird:
     def __init__(self, width, heigth, screen, gravity):
@@ -10,13 +11,13 @@ class Bird:
         self.heigth = heigth
         self.jump_higth = 7
         self.x = 100 -(self.width/2)
-        self.y = 100 -(self.heigth/2)
+        self.y = 250 -(self.heigth/2)
 
         self.points = 0
 
         self.rect = pygame.Rect(self.x,self.y,self.width, self.heigth)
 
-        self.YELLOW = (255,255,0)
+        self.YELLOW = (random.randint(0,255),random.randint(0,255),random.randint(0,255))
 
     def draw(self):
         self.rect = pygame.Rect(self.x,self.y,self.width, self.heigth)
