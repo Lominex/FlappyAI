@@ -114,6 +114,7 @@ def eval_gnomes(genomes, config):
         nets.append(net)
         birdlistcount += 1
         ge.append(genome)
+    print(birdlistcount)
     game(birdlistcount, nets, ge).main()
 
 def run(configFile):
