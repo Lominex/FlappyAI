@@ -6,7 +6,7 @@ import neat
 
 
 class game:
-    def __init__(self, birdlistcount, nets, ge):
+    def __init__(self, birdlistcount, nets, ge, gen):
         pygame.init()
         self.screen = pygame.display.set_mode((500, 725))
         pygame.display.set_caption("FlappyAI")
@@ -20,14 +20,14 @@ class game:
             self.birdlist.append(Bird.Bird(30, 30, self.screen, 0.25))
         self.nets = nets
         self.ge = ge
-        self.pipelist.append(Pipe.Pipe(self.screen, 80, self.width, 0))
-
+        self.gen = gen
+        
         self.BACKGROUND = (0,255,255)
 
         self.toprect = pygame.Rect(-5,0,self.width, 5)
         self.bottomrect = pygame.Rect(0,725 + 5,self.width, 5)
-        self.SPAWNPIPE = pygame.USEREVENT
-        pygame.time.set_timer(self.SPAWNPIPE, 1500)
+        self.SPAWNPIPE = False
+        self.pipelist.append(Pipe.Pipe(self.screen, 80, self.width + 10, 0))
 
         self.clock.tick(120)
 
@@ -41,57 +41,55 @@ class game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.active = False
-                    quit()
-                #remove when neat is implemented 
-                #if event.type == pygame.KEYDOWN:
-                    #if event.key == pygame.K_SPACE:
-                    #    self.bird.jump()
-                ##end remove 
-                if event.type == self.SPAWNPIPE:
-                    self.pipelist.append(Pipe.Pipe(self.screen, 80, self.width + 10, 0))
+                    quit() 
+            if self.pipelist[0].x + self.pipelist[0].width <= 0:
+                self.pipelist.pop()
+                self.SPAWNPIPE = True
+            if self.SPAWNPIPE:
+                self.SPAWNPIPE = False
+                self.pipelist.append(Pipe.Pipe(self.screen, 80, self.width + 10, 0))
             self.screen.fill(self.BACKGROUND)
             
-            for i in range(len(self.pipelist)-1, 0, -1):
-                self.pipelist[i].move()
-                self.pipelist[i].draw()
-                if self.pipelist[i].x + self.pipelist[i].width <= 0:
-                    self.pipelist.pop(i)
+            self.pipelist[0].move()
+            self.pipelist[0].draw()
                 
-                for bird in self.birdlist:   
-                    bird.apply_gravity() 
-                    bird.draw()            
-                    if (bird.collision(self.pipelist[i].rectup)):
-                        self.ge[self.birdlist.index(bird)].fitness -= 1
-                        self.nets.pop(self.birdlist.index(bird))
-                        self.ge.pop(self.birdlist.index(bird))
-                        self.birdlist.pop(self.birdlist.index(bird))
+            for bird in self.birdlist:   
+                bird.apply_gravity() 
+                bird.draw()     
+                pygame.draw.line(self.screen, (255,0,0), (bird.x + bird.width, bird.y) ,(self.pipelist[0].x, self.pipelist[0].height)) 
+                pygame.draw.line(self.screen, (255,0,0), (bird.x + bird.width, bird.y +bird.heigth) ,(self.pipelist[0].x, self.pipelist[0].height+150))      
+                if (bird.collision(self.pipelist[0].rectup)):
+                    self.ge[self.birdlist.index(bird)].fitness -= 1
+                    self.nets.pop(self.birdlist.index(bird))
+                    self.ge.pop(self.birdlist.index(bird))
+                    self.birdlist.pop(self.birdlist.index(bird))
                     
-                    elif (bird.collision(self.pipelist[i].rectdown)):
-                        self.ge[self.birdlist.index(bird)].fitness -= 1
-                        self.nets.pop(self.birdlist.index(bird))
-                        self.ge.pop(self.birdlist.index(bird))
-                        self.birdlist.pop(self.birdlist.index(bird))
+                elif (bird.collision(self.pipelist[0].rectdown)):
+                    self.ge[self.birdlist.index(bird)].fitness -= 1
+                    self.nets.pop(self.birdlist.index(bird))
+                    self.ge.pop(self.birdlist.index(bird))
+                    self.birdlist.pop(self.birdlist.index(bird))
 
-                    elif (bird.collision(self.pipelist[i].rectpoint)):
-                        self.ge[self.birdlist.index(bird)].fitness += 5 
+                elif (bird.collision(self.pipelist[0].rectpoint)):
+                    self.ge[self.birdlist.index(bird)].fitness += 5 
 
-                    elif (bird.collision(self.toprect)):
-                        self.ge[self.birdlist.index(bird)].fitness -= 1
-                        self.nets.pop(self.birdlist.index(bird))
-                        self.ge.pop(self.birdlist.index(bird))
-                        self.birdlist.pop(self.birdlist.index(bird))
+                elif (bird.collision(self.toprect)):
+                    self.ge[self.birdlist.index(bird)].fitness -= 1
+                    self.nets.pop(self.birdlist.index(bird))
+                    self.ge.pop(self.birdlist.index(bird))
+                    self.birdlist.pop(self.birdlist.index(bird))
 
-                    elif (bird.collision(self.bottomrect)):
-                        self.ge[self.birdlist.index(bird)].fitness -= 1
-                        self.nets.pop(self.birdlist.index(bird))
-                        self.ge.pop(self.birdlist.index(bird))
-                        self.birdlist.pop(self.birdlist.index(bird))
+                elif (bird.collision(self.bottomrect)):
+                    self.ge[self.birdlist.index(bird)].fitness -= 1
+                    self.nets.pop(self.birdlist.index(bird))
+                    self.ge.pop(self.birdlist.index(bird))                        
+                    self.birdlist.pop(self.birdlist.index(bird))
 
-                for bird in self.birdlist: 
-                    self.ge[self.birdlist.index(bird)].fitness += 0.1
-                    output = self.nets[self.birdlist.index(bird)].activate((bird.y, abs(bird.y + self.pipelist[i].height), abs(bird.y + self.pipelist[i].height + 150)))
-                    if output[0] < -0.5:
-                        bird.jump()
+            for bird in self.birdlist: 
+                self.ge[self.birdlist.index(bird)].fitness += 0.1
+                output = self.nets[self.birdlist.index(bird)].activate((bird.y + bird.heigth / 2, abs(bird.y + self.pipelist[0].height), abs(bird.y + bird.heigth + self.pipelist[0].height + 150)))
+                if output[0] < -0.5:
+                    bird.jump()
 
             pygame.display.flip()
 
@@ -102,7 +100,8 @@ class game:
 
 def eval_gnomes(genomes, config):
     print('EVAL_GNOMES')
-    gen = 1
+    global gen 
+    gen += 1
 
     birdlistcount = 0
     nets     = []
@@ -115,7 +114,8 @@ def eval_gnomes(genomes, config):
         birdlistcount += 1
         ge.append(genome)
     print(birdlistcount)
-    game(birdlistcount, nets, ge).main()
+    print(gen)
+    game(birdlistcount, nets, ge, gen).main()
 
 def run(configFile):
     config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction, 
@@ -130,6 +130,8 @@ def run(configFile):
     winner = p.run(eval_gnomes, 50)
 
     print(winner)
+
+gen = 0
 
 local = os.path.dirname(__file__)
 configPath = os.path.join(local, 'neat-config.txt')
