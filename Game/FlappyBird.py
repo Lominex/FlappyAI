@@ -24,11 +24,13 @@ class game:
         
         self.BACKGROUND = (0,255,255)
 
-        self.font = pygame.font.SysFont(None, 24)
-        self.imggen = self.font.render('Gen' + str(self.gen), True, (0,0,0))
-        self.imgscore = self.font.render('Score' + str(self.birdlist[0].points), True, (0,0,0))
+        self.font = pygame.font.SysFont(None, 45)
+        self.imggen = self.font.render('Gen: ' + str(self.gen), True, (0,0,0))
+        self.imgscore = self.font.render('Score: ' + str(self.birdlist[0].points), True, (0,0,0))
+        self.imgalive = self.font.render('Alive: ' + str(len(self.birdlist)), True, (0,0,0))
         self.screen.blit(self.imggen, (20, 20)) 
         self.screen.blit(self.imgscore, (20, 40))   
+        self.screen.blit(self.imgscore, (20, 60))
 
         self.toprect = pygame.Rect(-5,0,self.width, 5)
         self.bottomrect = pygame.Rect(0,725 + 5,self.width, 5)
@@ -40,7 +42,6 @@ class game:
         game.main(self)
     
     def main(self):
-        print('MAIN')
         while self.active and len(self.birdlist) > 0: 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -51,7 +52,7 @@ class game:
                 self.SPAWNPIPE = True
             if self.SPAWNPIPE:
                 self.SPAWNPIPE = False
-                self.pipelist.append(Pipe.Pipe(self.screen, 80, self.width + 10, 0))
+                self.pipelist.append(Pipe.Pipe(self.screen, 80, self.width + 200, 0))
             self.screen.fill(self.BACKGROUND)
             
             self.pipelist[0].move()
@@ -77,6 +78,7 @@ class game:
                 elif (bird.collision(self.pipelist[0].rectpoint)):
                     self.ge[self.birdlist.index(bird)].fitness += 5 
                     bird.addPoint()
+                    self.imgscore = self.font.render('Score: ' + str(int(self.birdlist[0].points / 6)), True, (0,0,0))
 
                 elif (bird.collision(self.toprect)):
                     self.ge[self.birdlist.index(bird)].fitness -= 1
@@ -96,10 +98,10 @@ class game:
                 if output[0] < -0.5:
                     bird.jump()
 
-            self.imgscore = self.font.render('Score' + str(int(self.birdlist[0].points / 6)), True, (0,0,0))
-
+            self.imgalive = self.font.render('Alive: ' + str(len(self.birdlist)), True, (0,0,0))
             self.screen.blit(self.imggen, (20, 20))
-            self.screen.blit(self.imgscore, (20, 40))
+            self.screen.blit(self.imgscore, (20, 50))
+            self.screen.blit(self.imgalive, (20, 80))
             pygame.display.flip()
 
             #print(len(self.birdlist))
@@ -108,7 +110,6 @@ class game:
         pygame.QUIT
 
 def eval_gnomes(genomes, config):
-    print('EVAL_GNOMES')
     global gen 
     gen += 1
 
@@ -122,8 +123,6 @@ def eval_gnomes(genomes, config):
         nets.append(net)
         birdlistcount += 1
         ge.append(genome)
-    print(birdlistcount)
-    print(gen)
     game(birdlistcount, nets, ge, gen).main()
 
 def run(configFile):
