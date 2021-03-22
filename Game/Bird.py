@@ -34,9 +34,5 @@ class Bird:
     def collision(self, rect:pygame.Rect):
         return self.rect.colliderect(rect)
 
-    def kill(self):
-        print(self.points / 6)
-        exit()
-
     def addPoint(self):
         self.points += 1
