@@ -102,6 +102,21 @@ class game:
             self.screen.blit(self.imggen, (20, 20))
             self.screen.blit(self.imgscore, (20, 50))
             self.screen.blit(self.imgalive, (20, 80))
+            #brain of best bird
+            #lines
+            pygame.draw.line(self.screen, (255,0,0), (400, 20),(450, 20), 1)
+            pygame.draw.line(self.screen, (255,0,0), (400, 20),(450, 70), 1)
+            pygame.draw.line(self.screen, (255,0,0), (400, 70),(450, 70), 1)
+            pygame.draw.line(self.screen, (255,0,0), (400, 70),(450, 20), 1)
+            #dots
+            pygame.draw.circle(self.screen, (255,255,255), (400, 20), 5)
+            pygame.draw.circle(self.screen, (255,255,255), (400, 70), 5)
+            pygame.draw.circle(self.screen, (255,255,255), (450, 20), 5)
+            pygame.draw.circle(self.screen, (255,255,255), (450, 70), 5)
+            
+
+
+            #update display
             pygame.display.flip()
 
             #print(len(self.birdlist))
